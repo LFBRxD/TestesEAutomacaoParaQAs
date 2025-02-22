@@ -59,7 +59,7 @@ class UserRepository:
             return None
 
     @staticmethod
-    def update_by_id(user_id :int , data : dict):
+    def update_by_id(user_id :int , data : dict[str, str]):
         try:
             with current_app.app_context():
                 user = User.query.get(user_id)

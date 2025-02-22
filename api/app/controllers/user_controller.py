@@ -420,7 +420,7 @@ class UserController:
             if not user:
                 return jsonify({"error": "User not found"}), 404
 
-            return jsonify(user), 200
+            return jsonify({"user": user["name"], "status":"deleted"}), 200
         except Exception as e:
             logging.error(f"Error in delete_user: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500

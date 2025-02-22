@@ -8,7 +8,7 @@ from app.models.product import Product
 
 class ProductRepository:
     @staticmethod
-    def create(data):
+    def create(data : dict[str, str]):
         try:
             with current_app.app_context():
                 new_product = Product(name=data["name"], price=data["price"], stock=data["stock"],
@@ -33,7 +33,7 @@ class ProductRepository:
             return {"error": "Internal Server Error"}, 500
 
     @staticmethod
-    def get_by_id(product_id):
+    def get_by_id(product_id : int):
         try:
             with current_app.app_context():
                 product = Product.query.get(product_id)
@@ -43,7 +43,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def get_by_name(name):
+    def get_by_name(name : str):
         try:
             with current_app.app_context():
                 product = Product.query.filter_by(name=name).first()
@@ -53,7 +53,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def get_all_by_price(price):
+    def get_all_by_price(price : float):
         try:
             with current_app.app_context():
                 products = Product.query.filter(Product.price == price).all()
@@ -63,7 +63,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def update_description(product_id, description):
+    def update_description(product_id :int , description : str):
         try:
             with current_app.app_context():
                 product = Product.query.get(product_id)
@@ -78,7 +78,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def update_by_id(product_id, data):
+    def update_by_id(product_id : int, data : dict[str, str]):
         try:
             with current_app.app_context():
                 product = Product.query.get(product_id)
@@ -87,6 +87,8 @@ class ProductRepository:
 
                 product.name = data["name"]
                 product.price = data["price"]
+                product.stock = data["stock"]
+                product.description = data["description"]
                 db.session.commit()
                 return product.to_dict()
         except Exception as e:
@@ -94,7 +96,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def delete_by_id(product_id):
+    def delete_by_id(product_id : int):
         try:
             with current_app.app_context():
                 product = Product.query.get(product_id)
@@ -109,7 +111,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def delete_by_name(name):
+    def delete_by_name(name : str):
         try:
             with current_app.app_context():
                 product = Product.query.filter_by(name=name).first()
@@ -124,7 +126,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def create_product(data):
+    def create_product(data : dict[str, str]):
         try:
             with current_app.app_context():
                 new_product = Product(name=data["name"], price=data["price"], stock=data["stock"],
@@ -138,7 +140,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def update_stock(product_id, quantity):
+    def update_stock(product_id : int , quantity : int):
         try:
             with current_app.app_context():
                 product = Product.query.get(product_id)
@@ -153,7 +155,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def update_name(product_id, name):
+    def update_name(product_id: int , name : str):
         try:
             with current_app.app_context():
                 product = Product.query.get(product_id)
@@ -168,7 +170,7 @@ class ProductRepository:
             return None
 
     @staticmethod
-    def update_price(product_id, price):
+    def update_price(product_id: int, price : float):
         try:
             with current_app.app_context():
                 product = Product.query.get(product_id)
