@@ -1,5 +1,7 @@
 import logging
+
 from app.repositories.product_repository import ProductRepository
+
 
 class ProductService:
     @staticmethod
@@ -11,7 +13,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in get_all_products: %s", str(e), exc_info=True)
             return {"error": "Internal Server Error"}, 500
-    
+
     @staticmethod
     def create_product(data):
         try:
@@ -20,8 +22,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in create_product: %s", str(e), exc_info=True)
             return {"error": "Internal Server Error"}, 500
-        
-    
+
     @staticmethod
     def get_product_by_id(product_id):
         try:
@@ -30,7 +31,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in get_product_by_id: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def get_product_by_name(name):
         try:
@@ -39,7 +40,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in get_product_by_name: %s", str(e), exc_info=True)
             return None
-    
+
     @staticmethod
     def update_product(product_id, data):
         try:
@@ -48,7 +49,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in update_product: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def delete_product(product_id):
         try:
@@ -57,7 +58,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in delete_product: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def delete_product_by_name(name):
         try:
@@ -66,7 +67,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in delete_product_by_name: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def update_product_stock(product_id, quantity):
         try:
@@ -75,7 +76,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in update_product_stock: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def update_product_price(product_id, price):
         try:
@@ -84,7 +85,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in update_product_price: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def update_product_name(product_id, name):
         try:
@@ -93,7 +94,7 @@ class ProductService:
         except Exception as e:
             logging.error("Error in update_product_name: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def update_product_description(product_id, description):
         try:
@@ -101,6 +102,4 @@ class ProductService:
             return product
         except Exception as e:
             logging.error("Error in update_product_description: %s", str(e), exc_info=True)
-            return None 
-    
-
+            return None

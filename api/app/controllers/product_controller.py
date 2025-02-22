@@ -1,7 +1,10 @@
 import logging
-from flask import request, jsonify
+
 from flasgger import swag_from
-from app.services.product_service import ProductService
+from flask import request, jsonify
+
+from api.app.services.product_service import ProductService
+
 
 class ProductController:
     @staticmethod
@@ -41,7 +44,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in get_products: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     @swag_from({
         "parameters": [
@@ -107,7 +110,7 @@ class ProductController:
         """
         try:
             data = request.json
-            logging.debug(f"Request Data: {data}")  
+            logging.debug(f"Request Data: {data}")
 
             if not data:
                 return jsonify({"error": "Invalid request, no JSON received"}), 400
@@ -121,7 +124,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in create_product: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-    
+
     @staticmethod
     @swag_from({
         "parameters": [
@@ -168,7 +171,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in get_product_by_id: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-    
+
     @staticmethod
     @swag_from({
         "parameters": [
@@ -211,7 +214,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in get_product_by_name: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     @swag_from({
         "parameters": [
@@ -263,10 +266,10 @@ class ProductController:
         Raises:
             Exception: If an error occurs during the update process.
         """
-        
+
         try:
             data = request.json
-            logging.debug(f"Request Data: {data}")  
+            logging.debug(f"Request Data: {data}")
 
             if not data:
                 return jsonify({"error": "Invalid request, no JSON received"}), 400
@@ -280,7 +283,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in update_product: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def delete_product(product_id):
         try:
@@ -292,7 +295,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in delete_product: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-    
+
     @staticmethod
     def delete_product_by_name(name):
         try:
@@ -304,7 +307,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in delete_product_by_name: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def update_product_description(product_id):
         try:
@@ -323,7 +326,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in update_product_description: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def update_product_price(product_id):
         try:
@@ -342,7 +345,7 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in update_product_price: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def update_product_stock(product_id):
         try:
@@ -361,4 +364,3 @@ class ProductController:
         except Exception as e:
             logging.error(f"Error in update_product_stock: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        

@@ -1,6 +1,9 @@
 import logging
+
 from flask import request, jsonify
-from app.services.user_service import UserService
+
+from api.app.services.user_service import UserService
+
 
 class UserController:
     @staticmethod
@@ -12,11 +15,11 @@ class UserController:
                 - If successful, returns a JSON list of users and a 200 status code.
                 - If an error occurs, returns a JSON error message and a 500 status code.
         """
-        
+
         try:
-            users = UserService.get_all_users()            
+            users = UserService.get_all_users()
             if isinstance(users, dict) and "error" in users:
-                return jsonify(users), 500 
+                return jsonify(users), 500
 
             logging.info(f"Fetched {len(users)} users")
             return jsonify(users), 200
@@ -40,7 +43,7 @@ class UserController:
 
         try:
             data = request.json
-            logging.debug(f"Request Data: {data}")  
+            logging.debug(f"Request Data: {data}")
 
             if not data:
                 return jsonify({"error": "Invalid request, no JSON received"}), 400
@@ -67,7 +70,7 @@ class UserController:
                     internal server error occurs.
         Raises:
             Exception: If an error occurs during the retrieval process.
-        """    
+        """
         try:
             user = UserService.get_user_by_id(user_id)
             if not user:
@@ -77,7 +80,7 @@ class UserController:
         except Exception as e:
             logging.error(f"Error in get_user_by_id: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def get_user_by_name(name):
         try:
@@ -89,7 +92,7 @@ class UserController:
         except Exception as e:
             logging.error(f"Error in get_user_by_name: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def get_user_by_email(email):
         try:
@@ -101,7 +104,7 @@ class UserController:
         except Exception as e:
             logging.error(f"Error in get_user_by_email: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-    
+
     @staticmethod
     def update_user(user_id):
         try:
@@ -120,7 +123,7 @@ class UserController:
         except Exception as e:
             logging.error(f"Error in update_user: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def delete_user(user_id):
         try:
@@ -132,7 +135,7 @@ class UserController:
         except Exception as e:
             logging.error(f"Error in delete_user: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
+
     @staticmethod
     def get_user_by_document(document):
         try:
@@ -144,5 +147,3 @@ class UserController:
         except Exception as e:
             logging.error(f"Error in get_user_by_document: {str(e)}", exc_info=True)
             return jsonify({"error": "Internal Server Error"}), 500
-        
-    

@@ -1,7 +1,10 @@
 import logging
-from app.models.user import User
-from app.db import db
+
 from flask import current_app
+
+from api.app.db import db
+from api.app.models.user import User
+
 
 class UserRepository:
     @staticmethod
@@ -14,7 +17,7 @@ class UserRepository:
         except Exception as e:
             logging.error("Error fetching users: %s", str(e), exc_info=True)
             return {"error": "Internal Server Error"}, 500
-        
+
     @staticmethod
     def get_by_id(user_id):
         try:
@@ -24,7 +27,7 @@ class UserRepository:
         except Exception as e:
             logging.error("Error fetching user by ID: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def get_by_name(name):
         try:
@@ -43,8 +46,8 @@ class UserRepository:
                 return user.to_dict() if user else None
         except Exception as e:
             logging.error("Error fetching user by email: %s", str(e), exc_info=True)
-            return None  
-        
+            return None
+
     @staticmethod
     def update_by_id(user_id, data):
         try:
@@ -52,7 +55,7 @@ class UserRepository:
                 user = User.query.get(user_id)
                 if not user:
                     return None
-                
+
                 user.name = data["name"]
                 user.email = data["email"]
                 db.session.commit()
@@ -61,7 +64,7 @@ class UserRepository:
             db.session.rollback()
             logging.error("Error updating user: %s", str(e), exc_info=True)
             return None
-    
+
     @staticmethod
     def delete_by_id(user_id):
         try:
@@ -69,7 +72,7 @@ class UserRepository:
                 user = User.query.get(user_id)
                 if not user:
                     return None
-                
+
                 db.session.delete(user)
                 db.session.commit()
                 return user.to_dict()
@@ -77,7 +80,7 @@ class UserRepository:
             db.session.rollback()
             logging.error("Error deleting user: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def delete_by_document(document):
         try:
@@ -85,7 +88,7 @@ class UserRepository:
                 user = User.query.filter_by(document=document).first()
                 if not user:
                     return None
-                
+
                 db.session.delete(user)
                 db.session.commit()
                 return user.to_dict()
@@ -99,13 +102,13 @@ class UserRepository:
         try:
             with current_app.app_context():
                 new_user = User(name=data["name"], email=data["email"])
-                db.session.add(new_user) 
+                db.session.add(new_user)
                 db.session.flush()
-                db.session.commit() 
-                
-                logging.info("User created successfully: %s", new_user.to_dict()) 
-                return new_user.to_dict() 
+                db.session.commit()
+
+                logging.info("User created successfully: %s", new_user.to_dict())
+                return new_user.to_dict()
         except Exception as e:
-            db.session.rollback() 
+            db.session.rollback()
             logging.error("Error creating user: %s", str(e), exc_info=True)
             return {"error": "Internal Server Error"}, 500

@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
-from flasgger import swag_from
 
 default_bp = Blueprint("default", __name__)
+
 
 @default_bp.route("/", methods=["GET"])
 def home():

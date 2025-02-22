@@ -1,4 +1,5 @@
-from app.db import db
+from api.app.db import db
+
 
 class Product(db.Model):
     """ Representa um produto no sistema. """

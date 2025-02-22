@@ -1,6 +1,6 @@
-import logging
 from flask import Blueprint
-from app.controllers.product_controller import ProductController
+
+from api.app.controllers.product_controller import ProductController
 
 product_bp = Blueprint("product", __name__)
 
@@ -11,5 +11,3 @@ product_bp.route("/<string:name>", methods=["GET"])(ProductController.get_produc
 product_bp.route("/<int:product_id>", methods=["PUT"])(ProductController.update_product)
 product_bp.route("/<int:product_id>", methods=["DELETE"])(ProductController.delete_product)
 product_bp.route("/<string:name>", methods=["DELETE"])(ProductController.delete_product_by_name)
-
-

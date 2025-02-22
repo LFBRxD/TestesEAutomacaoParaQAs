@@ -1,5 +1,7 @@
 import logging
+
 from app.repositories.user_repository import UserRepository
+
 
 class UserService:
     @staticmethod
@@ -22,14 +24,14 @@ class UserService:
             logging.debug("Received data: %s", data)
 
             ## Verifica se o usuário já existe pelo e-mail (caso o banco tenha restrição única)
-            #existing_user = UserRepository.get_by_email(data["email"])
-            #if existing_user:
+            # existing_user = UserRepository.get_by_email(data["email"])
+            # if existing_user:
             #    logging.warning("Attempt to create duplicate user: %s", data["email"])
             #    return {"error": "User with this email already exists"}, 409
 
             new_user = UserRepository.create(data)
             logging.info("User created successfully: %s", new_user)
-            
+
             return new_user  # O controller define o status 201
 
         except Exception as e:
@@ -44,7 +46,7 @@ class UserService:
         except Exception as e:
             logging.error("Error in get_user_by_id: %s", str(e), exc_info=True)
             return None
-    
+
     @staticmethod
     def get_user_by_name(name):
         try:
@@ -53,7 +55,7 @@ class UserService:
         except Exception as e:
             logging.error("Error in get_user_by_name: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def get_user_by_email(email):
         try:
@@ -62,7 +64,7 @@ class UserService:
         except Exception as e:
             logging.error("Error in get_user_by_email: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def update_user(user_id, data):
         try:
@@ -71,7 +73,7 @@ class UserService:
         except Exception as e:
             logging.error("Error in update_user: %s", str(e), exc_info=True)
             return None
-    
+
     @staticmethod
     def delete_user(user_id):
         try:
@@ -80,7 +82,7 @@ class UserService:
         except Exception as e:
             logging.error("Error in delete_user: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def delete_user_by_document(document):
         try:

@@ -1,9 +1,10 @@
 import logging
-from app import create_app
-from app.db import db
+import os
+
 from dotenv import load_dotenv
 
-import os
+from api.app import create_app
+from api.app.db import db
 
 load_dotenv()
 
@@ -16,6 +17,6 @@ app.config['FLASK_DEBUG'] = os.getenv('FLASK_DEBUG') == 'True'
 app.config['FLASK_RUN_PORT'] = os.getenv('FLASK_RUN_PORT', 5000)
 
 if __name__ == "__main__":
-    with app.app_context():  
-        db.create_all()  
-        app.run(debug=app.config['FLASK_DEBUG'], port=app.config['FLASK_RUN_PORT']) 
+    with app.app_context():
+        db.create_all()
+        app.run(debug=app.config['FLASK_DEBUG'], port=app.config['FLASK_RUN_PORT'])
