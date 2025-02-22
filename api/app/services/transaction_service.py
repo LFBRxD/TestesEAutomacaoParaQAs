@@ -42,7 +42,6 @@ class TransactionService:
     @staticmethod
     def create_transaction(data: dict):
         try:
-
             if not isinstance(data["status_id"], int):
                 status_name = data.pop("status", None)
                 status = Status.query.filter_by(name=status_name).first()
@@ -54,6 +53,11 @@ class TransactionService:
 
             transaction = Transaction(**data)
             logging.info("Creating transaction: %s", transaction)
+            
+            check_stock = TransactionRepository.check_stock(transaction.product_id, transaction.quantity)
+            if not check_stock:
+                logging.error("Stock unavailable for product_id: %s", transaction.product_id)
+                return None
 
             transaction = TransactionRepository.create_transaction(transaction)
 

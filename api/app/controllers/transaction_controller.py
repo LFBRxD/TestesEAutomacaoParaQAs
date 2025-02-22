@@ -206,7 +206,7 @@ class TransactionController:
             data = request.get_json()
             if data is None:
                 return jsonify({"error": "Bad Request: JSON não fornecido"}), 400
-
+            
             transaction = TransactionService.create_transaction(data)
 
             if transaction:

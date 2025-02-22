@@ -4,6 +4,8 @@ from flask import current_app
 
 from app.db import db
 from app.models.transaction import Transaction
+from app.models.product import Product
+from app.repositories.product_repository import ProductRepository
 
 class TransactionRepository:
     @staticmethod
@@ -40,7 +42,11 @@ class TransactionRepository:
     def create_transaction(transaction : Transaction):
         try:
             with current_app.app_context():
+                product_price = ProductRepository.get_by_id(transaction.product_id)["price"]
+                
                 transaction.transaction_date = db.func.now()
+                transaction.total = product_price * transaction.quantity
+
                 db.session.add(transaction)
                 db.session.commit()
                 return transaction.to_dict()
@@ -66,6 +72,19 @@ class TransactionRepository:
             db.session.rollback()
             logging.error("Error updating transaction: %s", str(e), exc_info=True)
             return None
+        
+    @staticmethod
+    def check_stock(product_id : int, quantity : int):
+        try:
+            with current_app.app_context():
+                product : Product = Product.query.get(product_id)
+                if not product:
+                    return False
+                
+                return product.stock >= quantity
+        except Exception as e:
+            logging.error("Error checking stock: %s", str(e), exc_info=True)
+            return False
         
     @staticmethod
     def delete_by_id(transaction_id : int):
