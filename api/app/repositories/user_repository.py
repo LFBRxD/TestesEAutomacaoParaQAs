@@ -11,7 +11,7 @@ class UserRepository:
     def get_by_document(document : str):
         try:
             with current_app.app_context():
-                user = User.query.filter_by(document=document).first()
+                user : User = User.query.filter_by(document=document).first()
                 return user.to_dict() if user else None
         except Exception as e:
             logging.error("Error fetching user by document: %s", str(e), exc_info=True)
@@ -32,7 +32,7 @@ class UserRepository:
     def get_by_id(user_id : int):
         try:
             with current_app.app_context():
-                user = User.query.get(user_id)
+                user : User = User.query.get(user_id)
                 return user.to_dict() if user else None
         except Exception as e:
             logging.error("Error fetching user by ID: %s", str(e), exc_info=True)
@@ -42,7 +42,7 @@ class UserRepository:
     def get_by_name(name : str):
         try:
             with current_app.app_context():
-                user = User.query.filter_by(name=name).first()
+                user : User = User.query.filter_by(name=name).first()
                 return user.to_dict() if user else None
         except Exception as e:
             logging.error("Error fetching user by name: %s", str(e), exc_info=True)
@@ -52,7 +52,7 @@ class UserRepository:
     def get_by_email(email : str):
         try:
             with current_app.app_context():
-                user = User.query.filter_by(email=email).first()
+                user : User = User.query.filter_by(email=email).first()
                 return user.to_dict() if user else None
         except Exception as e:
             logging.error("Error fetching user by email: %s", str(e), exc_info=True)
@@ -62,7 +62,7 @@ class UserRepository:
     def update_by_id(user_id :int , data : dict[str, str]):
         try:
             with current_app.app_context():
-                user = User.query.get(user_id)
+                user : User = User.query.get(user_id)
                 if not user:
                     return None
 
@@ -80,7 +80,7 @@ class UserRepository:
     def delete_by_id(user_id : int):
         try:
             with current_app.app_context():
-                user = User.query.get(user_id)
+                user : User = User.query.get(user_id)
                 if not user:
                     return None
 
@@ -96,7 +96,7 @@ class UserRepository:
     def delete_by_document(document : str):
         try:
             with current_app.app_context():
-                user = User.query.filter_by(document=document).first()
+                user : User = User.query.filter_by(document=document).first()
                 if not user:
                     return None
 

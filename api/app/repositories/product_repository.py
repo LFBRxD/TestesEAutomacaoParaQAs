@@ -36,7 +36,7 @@ class ProductRepository:
     def get_by_id(product_id : int):
         try:
             with current_app.app_context():
-                product = Product.query.get(product_id)
+                product : Product = Product.query.get(product_id)
                 return product.to_dict() if product else None
         except Exception as e:
             logging.error("Error fetching product by ID: %s", str(e), exc_info=True)
@@ -46,7 +46,7 @@ class ProductRepository:
     def get_by_name(name : str):
         try:
             with current_app.app_context():
-                product = Product.query.filter_by(name=name).first()
+                product : Product = Product.query.filter_by(name=name).first()
                 return product.to_dict() if product else None
         except Exception as e:
             logging.error("Error fetching product by name: %s", str(e), exc_info=True)
@@ -66,7 +66,7 @@ class ProductRepository:
     def update_description(product_id :int , description : str):
         try:
             with current_app.app_context():
-                product = Product.query.get(product_id)
+                product : Product = Product.query.get(product_id)
                 if not product:
                     return None
 
@@ -81,7 +81,7 @@ class ProductRepository:
     def update_by_id(product_id : int, data : dict[str, str]):
         try:
             with current_app.app_context():
-                product = Product.query.get(product_id)
+                product : Product = Product.query.get(product_id)
                 if not product:
                     return None
 
@@ -99,7 +99,7 @@ class ProductRepository:
     def delete_by_id(product_id : int):
         try:
             with current_app.app_context():
-                product = Product.query.get(product_id)
+                product : Product = Product.query.get(product_id)
                 if not product:
                     return None
 
@@ -114,7 +114,7 @@ class ProductRepository:
     def delete_by_name(name : str):
         try:
             with current_app.app_context():
-                product = Product.query.filter_by(name=name).first()
+                product : Product = Product.query.filter_by(name=name).first()
                 if not product:
                     return None
 
@@ -143,7 +143,7 @@ class ProductRepository:
     def update_stock(product_id : int , quantity : int):
         try:
             with current_app.app_context():
-                product = Product.query.get(product_id)
+                product : Product = Product.query.get(product_id)
                 if not product:
                     return None
 
@@ -158,7 +158,7 @@ class ProductRepository:
     def update_name(product_id: int , name : str):
         try:
             with current_app.app_context():
-                product = Product.query.get(product_id)
+                product : Product = Product.query.get(product_id)
                 if not product:
                     return None
 
@@ -173,7 +173,7 @@ class ProductRepository:
     def update_price(product_id: int, price : float):
         try:
             with current_app.app_context():
-                product = Product.query.get(product_id)
+                product : Product = Product.query.get(product_id)
                 if not product:
                     return None
 

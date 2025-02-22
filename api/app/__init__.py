@@ -23,6 +23,7 @@ def create_app():
     from app.routes.default_routes import default_bp
     from app.routes.user_routes import user_bp
     from app.routes.product_routes import product_bp
+    from app.routes.transactions_routes import transaction_bp
 
 
     # Configuração do Swagger
@@ -53,14 +54,7 @@ def create_app():
     app.register_blueprint(default_bp)
     app.register_blueprint(user_bp)
     app.register_blueprint(product_bp, url_prefix="/products")
+    app.register_blueprint(transaction_bp)
 
 
     return app
-#
-#
-## Importação e registro das rotas
-# from app.routes.purchase_routes import purchase_bp
-#
-# app.register_blueprint(purchase_bp, url_prefix="/purchases")
-# app.register_blueprint(default_bp)
-#
