@@ -201,72 +201,6 @@ class TransactionController:
             return jsonify({"error": "Internal Server Error"}), 500
         
     @staticmethod
-    @swag_from({
-        'tags': ['Transaction'],
-        'parameters': [
-            {
-                'in': 'body',
-                'name': 'data',
-                'schema': {
-                    'type': 'object',
-                    'properties': {
-                        'user_id': {'type': 'integer'},
-                        'amount': {'type': 'number'},
-                        'type': {'type': 'string'},
-                        'status': {'type': 'string'}
-                    }
-                },
-                'required': True
-            }
-        ],
-        'responses': {
-            201: {
-                'description': 'Create transaction',
-                'content': {
-                    'application/json': {
-                        'schema': {
-                            'type': 'object',
-                            'properties': {
-                                'id': {'type': 'integer'},
-                                'user_id': {'type': 'integer'},
-                                'amount': {'type': 'number'},
-                                'type': {'type': 'string'},
-                                'status': {'type': 'string'},
-                                'created_at': {'type': 'string'},
-                                'updated_at': {'type': 'string'}
-                            }
-                        }
-                    }
-                }
-            },
-            400: {
-                'description': 'Bad Request',
-                'content': {
-                    'application/json': {
-                        'schema': {
-                            'type': 'object',
-                            'properties': {
-                                'error': {'type': 'string'}
-                            }
-                        }
-                    }
-                }
-            },
-            500: {
-                'description': 'Internal Server Error',
-                'content': {
-                    'application/json': {
-                        'schema': {
-                            'type': 'object',
-                            'properties': {
-                                'error': {'type': 'string'}
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    })
     def create_transaction():
         try:
             data = request.get_json()
@@ -274,8 +208,10 @@ class TransactionController:
                 return jsonify({"error": "Bad Request: JSON não fornecido"}), 400
 
             transaction = TransactionService.create_transaction(data)
+
             if transaction:
                 return jsonify(transaction), 201
+            
             return jsonify({"error": "Bad Request"}), 400
         except Exception as e:
             logging.error(f"Error in Transaction.create_transaction: {str(e)}")

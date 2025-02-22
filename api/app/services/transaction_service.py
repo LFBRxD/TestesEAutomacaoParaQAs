@@ -3,6 +3,10 @@ import logging
 from app.repositories.transaction_repository import TransactionRepository
 from app.models.transaction import Transaction
 
+from app.models.status import Status
+from sqlalchemy.dialects.oracle import NUMBER
+
+
 class TransactionService:
     @staticmethod
     def get_all_transactions():
@@ -34,13 +38,25 @@ class TransactionService:
         except Exception as e:
             logging.error("Error in get_transaction_by_user_id: %s", str(e), exc_info=True)
             return None
-        
+
     @staticmethod
     def create_transaction(data: dict):
         try:
+
+            if not isinstance(data["status_id"], int):
+                status_name = data.pop("status", None)
+                status = Status.query.filter_by(name=status_name).first()
+
+                if not status:
+                    logging.error("Status invalid: %s", status_name)
+                    return None
+                data["status_id"] = status.id
+
             transaction = Transaction(**data)
+            logging.info("Creating transaction: %s", transaction)
+
             transaction = TransactionRepository.create_transaction(transaction)
-            
+
             return transaction
         except Exception as e:
             logging.error("Error in create_transaction: %s", str(e), exc_info=True)

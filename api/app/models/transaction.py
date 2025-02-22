@@ -7,8 +7,10 @@ class Transaction(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey("product.id"), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     total = db.Column(db.Float, nullable=False)
-    transaction_date = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.String(50), nullable=False)
+    transaction_date = db.Column(db.DateTime,  nullable=False)
+    
+    status_id = db.Column(db.Integer, db.ForeignKey("status.id"), nullable=False)
+    status = db.relationship("Status", back_populates="transactions")
 
     def to_dict(self):
         return {
@@ -17,6 +19,6 @@ class Transaction(db.Model):
             "product_id": self.product_id,
             "quantity": self.quantity,
             "total": self.total,
-            "status": self.status,
-            "transaction_date": self.transaction_date
+            "transaction_date": self.transaction_date,
+            "status": self.status.name if self.status else None
         }
