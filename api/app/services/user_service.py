@@ -2,7 +2,6 @@ import logging
 
 from app.repositories.user_repository import UserRepository
 
-
 class UserService:
     @staticmethod
     def get_all_users():
@@ -15,7 +14,7 @@ class UserService:
             return {"error": "Internal Server Error"}, 500
 
     @staticmethod
-    def create_user(data):
+    def create_user(data : dict):
         try:
             if not data or "name" not in data or "email" not in data:
                 logging.warning("Invalid user data received: %s", data)
@@ -39,7 +38,7 @@ class UserService:
             return {"error": "Internal Server Error"}, 500
 
     @staticmethod
-    def get_user_by_id(user_id):
+    def get_user_by_id(user_id: int):
         try:
             user = UserRepository.get_by_id(user_id)
             return user
@@ -48,7 +47,7 @@ class UserService:
             return None
 
     @staticmethod
-    def get_user_by_name(name):
+    def get_user_by_name(name : str):
         try:
             user = UserRepository.get_by_name(name)
             return user
@@ -57,7 +56,7 @@ class UserService:
             return None
 
     @staticmethod
-    def get_user_by_email(email):
+    def get_user_by_email(email: str):
         try:
             user = UserRepository.get_by_email(email)
             return user
@@ -66,7 +65,7 @@ class UserService:
             return None
 
     @staticmethod
-    def update_user(user_id, data):
+    def update_user(user_id : int, data: dict):
         try:
             user = UserRepository.update_by_id(user_id, data)
             return user
@@ -75,7 +74,7 @@ class UserService:
             return None
 
     @staticmethod
-    def delete_user(user_id):
+    def delete_user(user_id : int):
         try:
             user = UserRepository.delete_by_id(user_id)
             return user
@@ -84,10 +83,19 @@ class UserService:
             return None
 
     @staticmethod
-    def delete_user_by_document(document):
+    def delete_user_by_document(document : str):
         try:
             user = UserRepository.delete_by_document(document)
             return user
         except Exception as e:
             logging.error("Error in delete_user_by_document: %s", str(e), exc_info=True)
+            return None
+        
+    @staticmethod
+    def get_user_by_document(document : str):
+        try:
+            user = UserRepository.get_by_document(document)
+            return user
+        except Exception as e:
+            logging.error("Error in get_user_by_document: %s", str(e), exc_info=True)
             return None

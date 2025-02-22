@@ -17,8 +17,16 @@ python -m venv venv
 source venv/bin/activate  # No Windows: venv\Scripts\activate
 ```
 
-### 2️⃣ Instalar as dependências
+### 2️⃣ trabalhando com as dependências
+#### removendo todas as existentes:
 ```sh
+pip freeze > packages.txt
+pip uninstall -y -r packages.txt
+del packages.txt
+```
+
+```sh
+pip install --upgrade pip setuptools wheel
 pip install -r requirements.txt
 ```
 
@@ -88,14 +96,14 @@ flask db upgrade
 ```
 ### 📌 [em caso de erro] Criar tabelas no banco de dados
 ```sh
-python flask db init
-python flask db migrate -m "Inicializando banco de dados"
-python flask db upgrade
+python -m flask db init
+python -m flask db migrate -m "Inicializando banco de dados"
+python -m flask db upgrade
 ```
 
 ### 📌 Rodar a API em modo debug
 ```sh
-flask run --debug
+python -m flask run --debug
 ```
 
 ## ✨ Contribuição

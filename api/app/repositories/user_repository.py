@@ -2,11 +2,21 @@ import logging
 
 from flask import current_app
 
-from api.app.db import db
-from api.app.models.user import User
+from app.db import db
+from app.models.user import User
 
 
 class UserRepository:
+    @staticmethod
+    def get_by_document(document : str):
+        try:
+            with current_app.app_context():
+                user = User.query.filter_by(document=document).first()
+                return user.to_dict() if user else None
+        except Exception as e:
+            logging.error("Error fetching user by document: %s", str(e), exc_info=True)
+            return None
+
     @staticmethod
     def get_all():
         try:
@@ -19,7 +29,7 @@ class UserRepository:
             return {"error": "Internal Server Error"}, 500
 
     @staticmethod
-    def get_by_id(user_id):
+    def get_by_id(user_id : int):
         try:
             with current_app.app_context():
                 user = User.query.get(user_id)
@@ -29,7 +39,7 @@ class UserRepository:
             return None
 
     @staticmethod
-    def get_by_name(name):
+    def get_by_name(name : str):
         try:
             with current_app.app_context():
                 user = User.query.filter_by(name=name).first()
@@ -39,7 +49,7 @@ class UserRepository:
             return None
 
     @staticmethod
-    def get_by_email(email):
+    def get_by_email(email : str):
         try:
             with current_app.app_context():
                 user = User.query.filter_by(email=email).first()
@@ -49,7 +59,7 @@ class UserRepository:
             return None
 
     @staticmethod
-    def update_by_id(user_id, data):
+    def update_by_id(user_id :int , data : dict):
         try:
             with current_app.app_context():
                 user = User.query.get(user_id)
@@ -58,6 +68,7 @@ class UserRepository:
 
                 user.name = data["name"]
                 user.email = data["email"]
+                user.document = data["document"]
                 db.session.commit()
                 return user.to_dict()
         except Exception as e:
@@ -66,7 +77,7 @@ class UserRepository:
             return None
 
     @staticmethod
-    def delete_by_id(user_id):
+    def delete_by_id(user_id : int):
         try:
             with current_app.app_context():
                 user = User.query.get(user_id)
@@ -82,7 +93,7 @@ class UserRepository:
             return None
 
     @staticmethod
-    def delete_by_document(document):
+    def delete_by_document(document : str):
         try:
             with current_app.app_context():
                 user = User.query.filter_by(document=document).first()
@@ -101,7 +112,7 @@ class UserRepository:
     def create(data):
         try:
             with current_app.app_context():
-                new_user = User(name=data["name"], email=data["email"])
+                new_user = User(name=data["name"], email=data["email"], document=data["document"])
                 db.session.add(new_user)
                 db.session.flush()
                 db.session.commit()

@@ -3,8 +3,8 @@ import os
 
 from dotenv import load_dotenv
 
-from api.app import create_app
-from api.app.db import db
+from app import create_app
+from app.db import db
 
 load_dotenv()
 

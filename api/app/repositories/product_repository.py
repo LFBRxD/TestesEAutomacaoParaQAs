@@ -2,11 +2,25 @@ import logging
 
 from flask import current_app
 
-from api.app.db import db
-from api.app.models.product import Product
+from app.db import db
+from app.models.product import Product
 
 
 class ProductRepository:
+    @staticmethod
+    def create(data):
+        try:
+            with current_app.app_context():
+                new_product = Product(name=data["name"], price=data["price"], stock=data["stock"],
+                                      description=data["description"])
+                db.session.add(new_product)
+                db.session.commit()
+                return new_product.to_dict()
+        except Exception as e:
+            db.session.rollback()
+            logging.error("Error in create_product: %s", str(e), exc_info=True)
+            return {"error": "Internal Server Error"}, 500
+    
     @staticmethod
     def get_all():
         try:

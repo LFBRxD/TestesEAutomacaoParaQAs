@@ -1,21 +1,44 @@
 import logging
 
 from flask import request, jsonify
+from typing import Literal, Tuple
+from flask import Response
+from flasgger import swag_from
 
-from api.app.services.user_service import UserService
+from app.services.user_service import UserService
 
 
 class UserController:
     @staticmethod
+    @swag_from({
+        'tags': ['User'],
+        'responses': {
+            200: {
+                'description': 'A list of users',
+                'schema': {
+                    'type': 'array',
+                    'items': {
+                        'type': 'object',
+                        'properties': {
+                            'id': {'type': 'integer'},
+                            'name': {'type': 'string'},
+                            'email': {'type': 'string'}
+                        }
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })
     def get_users():
-        """
-        Fetches all users from the UserService and returns them as a JSON response.
-        Returns:
-            tuple: A tuple containing a JSON response and an HTTP status code.
-                - If successful, returns a JSON list of users and a 200 status code.
-                - If an error occurs, returns a JSON error message and a 500 status code.
-        """
-
         try:
             users = UserService.get_all_users()
             if isinstance(users, dict) and "error" in users:
@@ -28,19 +51,67 @@ class UserController:
             return jsonify({"error": "Internal Server Error"}), 500
 
     @staticmethod
+    @swag_from({
+        'tags': ['User'],
+        'parameters': [
+            {
+                'name': 'body',
+                'in': 'body',
+                'required': True,
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'},
+                        'document': {'type': 'string'}
+                    },
+                    'required': ['name', 'email', 'document']
+                }
+            }
+        ],
+        'responses': {
+            201: {
+                'description': 'User created successfully',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'},
+                        'document': {'type': 'string'}
+                    }
+                }
+            },
+            400: {
+                'description': 'Invalid request',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            409: {
+                'description': 'Conflict',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })
     def create_user():
-        """
-        Create a new user.
-        This function handles the creation of a new user by processing the incoming JSON request data.
-        It validates the request data, attempts to create a user using the UserService, and returns
-        appropriate JSON responses based on the outcome.
-        Returns:
-            Response: A JSON response with the created user data and a 201 status code if successful.
-                      A JSON response with an error message and a 400 status code if the request data is invalid.
-                      A JSON response with an error message and a 409 status code if there is a conflict.
-                      A JSON response with an error message and a 500 status code if an internal server error occurs.
-        """
-
         try:
             data = request.json
             logging.debug(f"Request Data: {data}")
@@ -59,18 +130,49 @@ class UserController:
             return jsonify({"error": "Internal Server Error"}), 500
 
     @staticmethod
-    def get_user_by_id(user_id):
-        """
-        Retrieve a user by their ID.
-        Args:
-            user_id (int): The ID of the user to retrieve.
-        Returns:
-            Response: A JSON response containing the user data if found, 
-                    or an error message if the user is not found or an 
-                    internal server error occurs.
-        Raises:
-            Exception: If an error occurs during the retrieval process.
-        """
+    @swag_from({
+        'tags': ['User'],
+        'parameters': [
+            {
+                'name': 'user_id',
+                'in': 'path',
+                'required': True,
+                'type': 'integer'
+            }
+        ],
+        'responses': {
+            200: {
+                'description': 'User found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'}
+                    }
+                }
+            },
+            404: {
+                'description': 'User not found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })
+    def get_user_by_id(user_id: int) -> Tuple[Response, Literal[404, 200, 500]]:
         try:
             user = UserService.get_user_by_id(user_id)
             if not user:
@@ -82,7 +184,49 @@ class UserController:
             return jsonify({"error": "Internal Server Error"}), 500
 
     @staticmethod
-    def get_user_by_name(name):
+    @swag_from({
+        'tags': ['User'],
+        'parameters': [
+            {
+                'name': 'name',
+                'in': 'path',
+                'required': True,
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            200: {
+                'description': 'User found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'}
+                    }
+                }
+            },
+            404: {
+                'description': 'User not found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })
+    def get_user_by_name(name : str) -> Tuple[Response, Literal[404, 200, 500]]:
         try:
             user = UserService.get_user_by_name(name)
             if not user:
@@ -94,7 +238,49 @@ class UserController:
             return jsonify({"error": "Internal Server Error"}), 500
 
     @staticmethod
-    def get_user_by_email(email):
+    @swag_from({
+        'tags': ['User'],
+        'parameters': [
+            {
+                'name': 'email',
+                'in': 'path',
+                'required': True,
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            200: {
+                'description': 'User found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'}
+                    }
+                }
+            },
+            404: {
+                'description': 'User not found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })
+    def get_user_by_email(email : str) -> Tuple[Response, Literal[404, 200, 500]]:
         try:
             user = UserService.get_user_by_email(email)
             if not user:
@@ -106,7 +292,68 @@ class UserController:
             return jsonify({"error": "Internal Server Error"}), 500
 
     @staticmethod
-    def update_user(user_id):
+    @swag_from({
+        'tags': ['User'],
+        'parameters': [
+            {
+                'name': 'body',
+                'in': 'body',
+                'required': True,
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'},
+                        'document': {'type': 'string'}
+                    },
+                    'required': ['id', 'name', 'email']
+                }
+            }
+        ],
+        'responses': {
+            200: {
+                'description': 'User updated successfully',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'},
+                        'document': {'type': 'string'}
+                    }
+                }
+            },
+            400: {
+                'description': 'Invalid request',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            404: {
+                'description': 'User not found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })
+    def update_user() -> Tuple[Response, Literal[400, 404, 200, 500]]:
         try:
             data = request.json
             logging.debug(f"Request Data: {data}")
@@ -114,7 +361,7 @@ class UserController:
             if not data:
                 return jsonify({"error": "Invalid request, no JSON received"}), 400
 
-            user = UserService.update_user(user_id, data)
+            user = UserService.update_user(data["id"], data)
 
             if not user:
                 return jsonify({"error": "User not found"}), 404
@@ -125,7 +372,49 @@ class UserController:
             return jsonify({"error": "Internal Server Error"}), 500
 
     @staticmethod
-    def delete_user(user_id):
+    @swag_from({
+        'tags': ['User'],
+        'parameters': [
+            {
+                'name': 'user_id',
+                'in': 'path',
+                'required': True,
+                'type': 'integer'
+            }
+        ],
+        'responses': {
+            200: {
+                'description': 'User deleted successfully',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'}
+                    }
+                }
+            },
+            404: {
+                'description': 'User not found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })
+    def delete_user(user_id : int) -> Tuple[Response, Literal[404, 200, 500]]:
         try:
             user = UserService.delete_user(user_id)
             if not user:
@@ -137,7 +426,49 @@ class UserController:
             return jsonify({"error": "Internal Server Error"}), 500
 
     @staticmethod
-    def get_user_by_document(document):
+    @swag_from({
+        'tags': ['User'],
+        'parameters': [
+            {
+                'name': 'document',
+                'in': 'path',
+                'required': True,
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            200: {
+                'description': 'User found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'id': {'type': 'integer'},
+                        'name': {'type': 'string'},
+                        'email': {'type': 'string'}
+                    }
+                }
+            },
+            404: {
+                'description': 'User not found',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            },
+            500: {
+                'description': 'Internal Server Error',
+                'schema': {
+                    'type': 'object',
+                    'properties': {
+                        'error': {'type': 'string'}
+                    }
+                }
+            }
+        }
+    })  
+    def get_user_by_document(document : str) -> Tuple[Response, Literal[404, 200, 500]]:
         try:
             user = UserService.get_user_by_document(document)
             if not user:
