@@ -9,6 +9,12 @@ Antes de rodar o projeto, certifique-se de ter os seguintes requisitos instalado
 - **pip** (gerenciador de pacotes do Python)
 - **virtualenv** (opcional, mas recomendado)
 
+### Clonar o repositorio
+```sh
+git clone https://github.com/LFBRxD/TestesEAutomacaoParaQAs.git
+cd frontend
+```
+
 ## 🚀 Como Rodar a API
 
 ### 1️⃣ Criar e ativar um ambiente virtual (opcional, mas recomendado)

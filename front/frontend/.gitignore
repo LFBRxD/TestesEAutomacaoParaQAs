@@ -1,20 +1,3 @@
-.idea/
-.vscode/
-node_modules/
-dist/
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.env
-*.log
-*.sqlite3
-*.sqlite
-*.db
-*.db-journal
-api/app/__pycache__/__init__.cpython-313.pyc
-
-
 # Logs
 logs
 *.log
