@@ -1,0 +1,494 @@
+{
+	"info": {
+		"_postman_id": "fb67af00-f3a7-4f11-94ea-3062cd88a3a1",
+		"name": "API Flask for QA",
+		"description": "API for QA could trainning automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4962879"
+	},
+	"item": [
+		{
+			"name": "1 - Create a user",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resp_json = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"last_user_id\", resp_json.id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Document length\", function () {\r",
+							"    pm.expect(resp_json.document.length).to.eql(13);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Advanced body validation\", function () {\r",
+							"    pm.expect(resp_json).to.have.property(\"document\").that.is.a(\"string\").with.lengthOf(11);\r",
+							"    pm.expect(resp_json).to.have.property(\"email\").that.is.a(\"string\").and.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);\r",
+							"    pm.expect(resp_json).to.have.property(\"id\").that.is.a(\"number\");\r",
+							"    pm.expect(resp_json).to.have.property(\"name\").that.is.a(\"string\").and.to.have.lengthOf(23);\r",
+							"});\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": \"{{email}}\",\r\n    \"name\": \"{{name}}\",\r\n    \"document\": \"{{document}}\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user"
+					]
+				},
+				"description": "Generated from cURL: curl -X POST \"http://localhost:5000/user\" -H  \"accept: application/json\" -H  \"Content-Type: application/json\" -d \"{  \\\"email\\\": \\\"Flavio\\\",  \\\"name\\\": \\\"teste\\\"}\""
+			},
+			"response": []
+		},
+		{
+			"name": "2 - Get All users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resp_json = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if response contains an array\", () => {\r",
+							"    pm.expect(resp_json).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if response array has at last one user\", () => {\r",
+							"    pm.expect(Object.keys(resp_json).length).to.above(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3 - Create a product",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function getRandomInt(min, max) {\r",
+							"    return Math.floor(Math.random() * (max - min + 1)) + min;\r",
+							"}\r",
+							"\r",
+							"function getRandomFloat(min, max) {\r",
+							"    return (Math.random() * (max - min) + min).toFixed(2);\r",
+							"}\r",
+							"\r",
+							"function getRandomProductName() {\r",
+							"    let products = [\"Laptop\", \"Mouse\", \"keyboard\", \"Smartphone\", \"Headset\", \"Printer\"];\r",
+							"    let brand = [\"Brand A\", \"Brand D\", \"Brand E\", \"Brand F\", \"Brand C\"];\r",
+							"    return `${brand[getRandomInt(0, brand.length - 1)]} ${products[getRandomInt(0, products.length - 1)]}`;\r",
+							"}\r",
+							"\r",
+							"function getRandomDescription() {\r",
+							"    let adjectives = [\"Excelent\", \"New\", \"Strong\", \"Compact\", \"Durable\", \"Economic\", \"Mordern\", \"Vintage\"];\r",
+							"    let features = [\"with high resolution\", \"optimized designt\", \"and top of the edge\", \"with long duration battery\"];\r",
+							"    return `${adjectives[getRandomInt(0, adjectives.length - 1)]} product ${features[getRandomInt(0, features.length - 1)]}.`;\r",
+							"}\r",
+							"\r",
+							"let requestBody = {\r",
+							"    \"name\": getRandomProductName(),\r",
+							"    \"price\": parseFloat(getRandomFloat(50, 5000)),  \r",
+							"    \"stock\": getRandomInt(1, 1), \r",
+							"    \"description\": getRandomDescription()\r",
+							"};\r",
+							"\r",
+							"pm.variables.set(\"randomProductRequestBody\", JSON.stringify(requestBody));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resp_json = pm.response.json();\r",
+							"\r",
+							"pm.collectionVariables.set(\"last_user_id\", resp_json.id);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Advanced body validation, with all fields\", function () {\r",
+							"    pm.expect(resp_json).to.have.property(\"description\").that.is.a(\"string\").and.not.null;\r",
+							"    pm.expect(resp_json).to.have.property(\"id\").that.is.a(\"number\");\r",
+							"    pm.expect(resp_json).to.have.property(\"stock\").that.is.a(\"number\").and.to.be.above(0);\r",
+							"    pm.expect(resp_json).to.have.property(\"name\").that.is.a(\"number\").and.to.be.not.empty;\r",
+							"    pm.expect(resp_json).to.have.property(\"price\").that.is.a(\"number\").and.to.be.above(1);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.collectionVariables.set(\"last_product_id\", resp_json.id);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{randomProductRequestBody}}\n",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/products/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"products",
+						""
+					]
+				},
+				"description": "Create a product"
+			},
+			"response": []
+		},
+		{
+			"name": "4 - Get all products",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var resp_json = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if response contains an array\", () => {\r",
+							"    pm.expect(resp_json).to.be.an(\"array\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check if response array has at last one product\", () => {\r",
+							"    pm.expect(Object.keys(resp_json).length).to.lessThan(0);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/products/",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"products",
+						""
+					]
+				},
+				"description": "Get all products"
+			},
+			"response": []
+		},
+		{
+			"name": "5 - Create a transaction with a valid data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.sendRequest(pm.variables.get(\"baseUrl\") + \"/users\", function (err, response) {\r",
+							"    if (err) {\r",
+							"        console.log(\"Error:\", err);\r",
+							"    } else {\r",
+							"        let resp_json = response.json(); \r",
+							"        \r",
+							"        if (Array.isArray(resp_json) && resp_json.length > 0) {\r",
+							"            let randomIndex = Math.floor(Math.random() * resp_json.length); \r",
+							"            let user_id = resp_json[randomIndex].id; \r",
+							"            \r",
+							"            pm.variables.set(\"random_valid_user_id\", user_id); \r",
+							"        } else {\r",
+							"            console.log(\"Error.\");\r",
+							"        }\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.sendRequest(pm.variables.get(\"baseUrl\") + \"/products\", function (err, response) {\r",
+							"    if (err) {\r",
+							"        console.log(\"Error:\", err);\r",
+							"    } else {\r",
+							"        let resp_json = response.json(); \r",
+							"        \r",
+							"        if (Array.isArray(resp_json) && resp_json.length > 0) {\r",
+							"            let randomIndex = Math.floor(Math.random() * resp_json.length); \r",
+							"            let product_id = resp_json[randomIndex].id; \r",
+							"            \r",
+							"            pm.variables.set(\"random_valid_product_id\", product_id); \r",
+							"        } else {\r",
+							"            console.log(\"Error.\");\r",
+							"        }\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"function getRandomInt(min, max) {\r",
+							"    return Math.floor(Math.random() * (max - min + 1)) + min;\r",
+							"}\r",
+							"\r",
+							"function getRandomFloat(min, max) {\r",
+							"    return (Math.random() * (max - min) + min).toFixed(2);\r",
+							"}\r",
+							"\r",
+							"pm.variables.set(\"product_quantity\",getRandomInt(1, 10));\r",
+							"pm.variables.set(\"product_total\", parseFloat(getRandomFloat(50, 5000)));\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"user_id\": {{random_valid_user_id}},\n    \"product_id\": {{random_valid_product_id}},\n    \"quantity\": {{product_quantity}},\n    \"status_id\": 1\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6 - Create a transaction with a fully random data",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function getRandomInt(min, max) {\r",
+							"    return Math.floor(Math.random() * (max - min + 1)) + min;\r",
+							"}\r",
+							"\r",
+							"function getRandomFloat(min, max) {\r",
+							"    return (Math.random() * (max - min) + min).toFixed(2);\r",
+							"}\r",
+							"\r",
+							"const statuses = [\"Pendente\", \"Aprovada\", \"Rejeitada\", \"Cancelada\", \"Concluída\"];\r",
+							"\r",
+							"let requestBody = {\r",
+							"    \"user_id\": getRandomInt(1, 1000), \r",
+							"    \"product_id\": getRandomInt(1, 500), \r",
+							"    \"quantity\": getRandomInt(1, 10), \r",
+							"    \"total\": parseFloat(getRandomFloat(50, 5000)), \r",
+							"    \"status\": statuses[getRandomInt(0, statuses.length - 1)] \r",
+							"};\r",
+							"\r",
+							"pm.variables.set(\"randomTransactionBody\", JSON.stringify(requestBody));\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{randomTransactionBody}}\n",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/transaction",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"transaction"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"const randomEmail = `user_${Math.floor(Math.random() * 10000)}@email.com`;\r",
+					"const randomName = `TesteName${Math.floor(Math.random() * 1000)} LastName${Math.floor(Math.random() * 1000)} `;\r",
+					"const randomDocument = `${Math.floor(10000000000 + Math.random() * 90000000000)}`;\r",
+					"\r",
+					"pm.collectionVariables.set(\"email\", randomEmail);\r",
+					"pm.collectionVariables.set(\"name\", randomName);\r",
+					"pm.collectionVariables.set(\"document\", randomDocument);\r",
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "last_user_id",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "name",
+			"value": ""
+		},
+		{
+			"key": "document",
+			"value": ""
+		},
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "last_product_id",
+			"value": ""
+		}
+	]
+}

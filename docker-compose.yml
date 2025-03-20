@@ -1,0 +1,48 @@
+version: '3.9'
+
+services:
+  api:
+    build: ./api
+    container_name: api-flask
+    ports:
+      - "5000:8080"
+    environment:
+      FLASK_ENV: development
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    container_name: front-vue
+    ports:
+      - "8080:8081"
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+  postman:
+    build: ./postman
+    container_name: postman-tests
+    volumes:
+      - ./postman:/etc/newman
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - app-network
+
+  k6:
+    build: ./k6
+    container_name: k6-tests
+    volumes:
+      - ./k6:/tests
+    depends_on:
+      - api
+      - frontend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
